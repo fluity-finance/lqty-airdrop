@@ -2,11 +2,11 @@
 pragma solidity 0.7.6;
 
 interface IERC20 {
-    function transfer(address _receiver, uint256 _amount) external;
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 }
 
 
-// MerkleAirdropper for ongoing EPS airdrop to veCRV holders
+// MerkleAirdropper for ongoing FLTY airdrop to LQTY holders & stakers
 // Based on the EMN refund contract by banteg - https://github.com/banteg/your-eminence
 contract MerkleAirdropper {
 
@@ -77,7 +77,7 @@ contract MerkleAirdropper {
 
         // Mark it claimed and send the token.
         _setClaimed(merkleIndex, index);
-        IERC20(airdropToken).transfer(msg.sender, amount);
+        IERC20(airdropToken).transferFrom(authority, msg.sender, amount);
 
         emit Claimed(merkleIndex, index, msg.sender, amount);
     }
