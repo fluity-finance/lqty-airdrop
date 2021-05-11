@@ -1,5 +1,8 @@
 lqty-airdrop
 ============
 
-modified from https://github.com/ellipsis-finance/ellipsis/blob/master/contracts/MerkleDistributor.sol
+contract modified from https://github.com/ellipsis-finance/ellipsis/blob/master/contracts/MerkleDistributor.sol
 diffchecker https://www.diffchecker.com/etbCyjZw
+
+script modified from https://github.com/ellipsis-finance/vecrv-airdrop/blob/master/scripts/vecrv.py
+diffchecker https://www.diffchecker.com/JV1WBFFp
