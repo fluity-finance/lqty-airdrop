@@ -2,10 +2,10 @@ lqty-airdrop
 ============
 
 contract modified from https://github.com/ellipsis-finance/ellipsis/blob/master/contracts/MerkleDistributor.sol
-diffchecker https://www.diffchecker.com/etbCyjZw
+diffchecker https://www.diffchecker.com/2dgYV0ki
 
 script modified from https://github.com/ellipsis-finance/vecrv-airdrop/blob/master/scripts/vecrv.py
-diffchecker https://www.diffchecker.com/SVSvQJwT
+diffchecker https://www.diffchecker.com/6yeso3s3/
 
 quick way to check balances from generated output of the script:
 
@@ -48,3 +48,4 @@ quick way to check balances from generated output of the script:
 	    "holdingBalance": 126936682497401850000
 	  }
 	}
+
