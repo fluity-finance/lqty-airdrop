@@ -8,8 +8,6 @@ from fractions import Fraction
 from eth_abi.packed import encode_abi_packed
 from eth_utils import encode_hex
 
-lqty_total_supply = 100000000000000000000000000
-
 class MerkleTree:
     def __init__(self, elements):
         self.elements = sorted(set(web3.keccak(hexstr=el) for el in elements))
@@ -139,7 +137,8 @@ def get_lqty_staker_balances(addresses, snapshot_block):
 
 
 def get_proof(balances, snapshot_block):
-    total_distribution = (250000000*10**18)//104
+    # 25mil airdrop in total, 104 airdrop rounds
+    total_distribution = (25000000*10**18)//104
     total_lqty = sum(balances.values())
     balances = {k: int(Fraction(v*total_distribution, total_lqty)) for k, v in balances.items()}
     balances = {k: v for k, v in balances.items() if v}
