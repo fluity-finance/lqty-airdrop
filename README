@@ -6,3 +6,45 @@ diffchecker https://www.diffchecker.com/etbCyjZw
 
 script modified from https://github.com/ellipsis-finance/vecrv-airdrop/blob/master/scripts/vecrv.py
 diffchecker https://www.diffchecker.com/JV1WBFFp
+
+quick way to check balances from generated output of the script:
+
+	> brownie run scripts/lqty.py
+	Brownie v1.14.6 - Python development framework for Ethereum
+
+	LqtyAirdropProject is the active project.
+
+	Running 'scripts/lqty.py::main'...
+	12422089/12422102
+	0/1
+
+	Found 6290 addresses!
+	0/6290
+	1000/6290
+	2000/6290
+	3000/6290
+	4000/6290
+	5000/6290
+	6000/6290
+	total LQTY holder balance: 280376088866047844290709
+	0/6290
+	1000/6290
+	2000/6290
+	3000/6290
+	4000/6290
+	5000/6290
+	6000/6290
+	total LQTY staker balance: 2281944636400131250354146
+	merkle root: 0x8d717546db2d1cff0502843cc6087203068d9b8e4058570bbbe91b155400823a
+	Distribution saved to distributions/distribution-2021-05-06.json
+	Balances saved to distributions/balance-2021-05-06.json
+
+	> jq 'to_entries[] | select (.key == "0x028e85ff0ee4010e968e90145a19ff88bdaadba9")' distributions/balance-2021-05-06.json
+	{
+	  "key": "0x028e85ff0ee4010e968e90145a19ff88bdaadba9",
+	  "value": {
+	    "totalBalance": 126936682497401850000,
+	    "stakingBalance": 0,
+	    "holdingBalance": 126936682497401850000
+	  }
+	}

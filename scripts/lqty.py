@@ -197,7 +197,24 @@ def main():
 
     date = time.strftime("%Y-%m-%d", time.gmtime(snapshot_time))
     distro_json = Path(f'distributions/distribution-{date}.json')
+    bal_json = Path(f'distributions/balance-{date}.json')
 
     with distro_json.open('w') as fp:
         json.dump(distribution, fp)
     print(f"Distribution saved to {distro_json}")
+
+    def format_to_json(stake_bal, hold_bal, total_bal):
+        output = {}
+        for k, v in total_bal.items():
+            if v == 0:
+                continue
+            output[k] = {
+                'totalBalance': v,
+                'stakingBalance': stake_bal.get(k, 0),
+                'holdingBalance': hold_bal.get(k, 0)
+            }
+        return output
+
+    with bal_json.open('w') as fp:
+        json.dump(format_to_json(staker_balances, holder_balances, balances), fp)
+    print(f"Balances saved to {bal_json}")
