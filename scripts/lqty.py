@@ -1,12 +1,31 @@
-from brownie import Contract, chain, web3
+from brownie import Contract, chain, network, web3
 import json
 from pathlib import Path
+import sys
 import time
 from itertools import zip_longest
 from collections import defaultdict, deque
 from fractions import Fraction
 from eth_abi.packed import encode_abi_packed
 from eth_utils import encode_hex
+
+
+def brownie_retry(f):
+    retried = 0
+    while retried < 10:
+        try:
+            return f()
+        except Exception as e:
+            print(f"failed, attemp {retried + 1}")
+            print(str(e))
+            current_network = network.show_active()
+            network.disconnect()
+            time.sleep(2 ** retried)
+            network.connect(current_network)
+            assert network.is_connected()
+            retried += 1
+    print("retry failed")
+    sys.exit(1)
 
 class MerkleTree:
     def __init__(self, elements):
@@ -57,7 +76,10 @@ def get_lqty_addresses(addresses, start_block, snapshot_block):
     latest = chain[-1].number
     for height in range(start_block, latest+1, 10000):
         print(f"{height}/{latest}")
-        for i in lqty.events.Transfer().getLogs(fromBlock=height, toBlock=min(height+10000, latest)):
+
+        f = lambda: lqty.events.Transfer().getLogs(fromBlock=height, toBlock=min(height+10000, latest))
+        logs = brownie_retry(f)
+        for i in logs:
             if i.args.value == 0:
                 continue
             for addr in [i.args["from"], i.args.to]:
@@ -113,7 +135,8 @@ def get_lqty_holder_balances(addresses, snapshot_block):
     step = 1000
     for i in range(0, len(mc_data), step):
         print(f"{i}/{len(mc_data)}")
-        response = multicall.aggregate.call(mc_data[i:i+step], block_identifier=snapshot_block)[1]
+        f = lambda: multicall.aggregate.call(mc_data[i:i+step], block_identifier=snapshot_block)
+        response = brownie_retry(f)[1]
         decoded = [lqty_contract.balanceOf.decode_output(data) for data in response]
         balances.update({addr.lower(): balance for addr, balance in zip(addresses[i:i+step], decoded)})
     print("total LQTY holder balance:", sum(balances.values()))
@@ -129,7 +152,8 @@ def get_lqty_staker_balances(addresses, snapshot_block):
     step = 1000
     for i in range(0, len(mc_data), step):
         print(f"{i}/{len(mc_data)}")
-        response = multicall.aggregate.call(mc_data[i:i+step], block_identifier=snapshot_block)[1]
+        f = lambda: multicall.aggregate.call(mc_data[i:i+step], block_identifier=snapshot_block)
+        response = brownie_retry(f)[1]
         decoded = [staking_contract.stakes.decode_output(data) for data in response]
         balances.update({addr.lower(): balance for addr, balance in zip(addresses[i:i+step], decoded)})
     print("total LQTY staker balance:", sum(balances.values()))
