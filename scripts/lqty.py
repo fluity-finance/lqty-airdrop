@@ -73,11 +73,11 @@ def get_lqty_addresses(addresses, start_block, snapshot_block):
 
     addresses = set(addresses)
     new_addresses = set()
-    latest = chain[-1].number
-    for height in range(start_block, latest+1, 10000):
-        print(f"{height}/{latest}")
+    end = snapshot_block
+    for height in range(start_block, end+1, 10000):
+        print(f"{height}/{end}")
 
-        f = lambda: lqty.events.Transfer().getLogs(fromBlock=height, toBlock=min(height+10000, latest))
+        f = lambda: lqty.events.Transfer().getLogs(fromBlock=height, toBlock=min(height+10000-1, end))
         logs = brownie_retry(f)
         for i in logs:
             if i.args.value == 0:
@@ -105,7 +105,7 @@ def get_lqty_addresses(addresses, start_block, snapshot_block):
                 addresses.add(addr)
 
     print(f"\nFound {len(addresses)} addresses!")
-    return sorted(addresses), latest
+    return sorted(addresses), end
 
 
 def get_block_at_timestamp(timestamp):
